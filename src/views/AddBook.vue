@@ -1,6 +1,8 @@
 <template>
   <div>
     <h3>Add New Book</h3>
+         ffwef {{ $store.state.user }}
+
     <div class="container py-5 main-container">
       <form>
         <div>
@@ -49,12 +51,11 @@ export default {
   },
   methods: {
     async addBook() {
-      const res = await axios.post("http://localhost:3000/books", {
+      await axios.post("http://localhost:3000/books", {
         title: this.book.name,
         image_url: JSON.stringify(this.book.image),
         available: this.book.noOfBooks,
       });
-      console.log(res);
     },
   },
   async mounted() {

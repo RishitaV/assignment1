@@ -9,12 +9,13 @@ import HomePage from './views/HomePage';
 import IssueBook from './views/IssueBook';
 import AddBook from './views/AddBook';
 import CustomerDetails from './views/CustomerDetails';
+import store from './store/store'
 
 Vue.use(VueRouter);
 const routes = [
-  { path: '/', name: 'LoginPage', component: LoginPage },
+  { path: '/login', name: 'LoginPage', component: LoginPage },
   { path: '/register', name: 'RegisterPage', component: RegisterPage },
-  { path: '/admin', name: 'AdminPage', component: AdminPage },
+  { path: '/', name: 'AdminPage', component: AdminPage },
   { path: '/home', name: 'HomePage', component: HomePage },
   { path: '/issueBook', name: 'IssueBook', component: IssueBook },
   {
@@ -26,17 +27,16 @@ const routes = [
   { path: '/custDetails', name: 'CustomerDetails', component: CustomerDetails },
   //metadata (read abt it)
 ];
-
 // const router = new VueRouter({
 //   routes
 // })
-
 let router = new VueRouter({ mode: 'history', routes });
 
 Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   vuetify,
   render: h => h(App)
 }).$mount('#app')

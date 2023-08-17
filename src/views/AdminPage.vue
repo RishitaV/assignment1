@@ -1,10 +1,11 @@
 <template>
   <div>
-    <HeaderComp >
-      <div class="options" :style="style"> Logo</div>
+    <HeaderComp>
+      <div class="options" :style="style">Logo</div>
     </HeaderComp>
     <div class="container">
       <SidebarComp />
+      ffwef {{ loginUser }}
       <v-simple-table class="table" height="90vh">
         <template v-slot:default>
           <thead>
@@ -36,11 +37,7 @@
                   color="primary"
                   >Issue Book</v-btn
                 >
-                <router-link to="/add"
-                  ><v-btn v-show="user.role === 'admin'" color="primary"
-                    >Add Book</v-btn
-                  ></router-link
-                >
+
                 <v-btn
                   v-show="user.role === 'admin'"
                   @click="deleteBook(book.id)"
@@ -52,6 +49,11 @@
           </tbody>
         </template>
       </v-simple-table>
+      <router-link to="/add"
+        ><v-btn v-show="user.role === 'admin'" color="primary"
+          >Add Book</v-btn
+        ></router-link
+      >
     </div>
     <alertDailog />
   </div>
@@ -73,13 +75,17 @@ export default {
     return {
       books: [],
       user: {},
-      style: "text-indent: 4em;"
+      style: "text-indent: 4em;",
     };
+  },
+  computed: {
+    loginUser() {
+      return this.$store.state.user
+    }
   },
   methods: {
     async deleteBook(id) {
       const res = await axios.delete("http://localhost:3000/books/" + id);
-      console.log("res==>", res);
       if (res.status === 200) {
         this.loadData();
       }

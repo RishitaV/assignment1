@@ -11,6 +11,12 @@
           ></v-text-field>
         </div>
 
+        <v-text-field
+          v-model="contact"
+          :rules="contactRules"
+          label="Contact"
+        ></v-text-field>
+
         <div>
           <v-text-field
             v-model="password"
@@ -27,7 +33,9 @@
           ></v-text-field>
         </div>
 
-        <button @click="signUp" type="submit" class="btn btn-primary btn-block">Sign Up</button>
+        <button @click.prevent="signUp(e)" type="submit" class="btn btn-primary btn-block">
+          Sign Up
+        </button>
       </form>
     </div>
   </div>
@@ -42,6 +50,7 @@ export default {
   data() {
     return {
       email: "",
+      contact: "",
       password: "",
       confirmPassword: "",
       emailRules: [
@@ -57,20 +66,32 @@ export default {
           /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(v) ||
           "Password must contain at least lowercase letter, one number, a special character and one uppercase letter",
       ],
-    }
+      contactRules: [
+        (v) => !!v || "Contact is required",
+        (v) =>
+          /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/.test(v) ||
+          "Invalid contact number",
+      ],
+    };
   },
   methods: {
     async signUp() {
       let res = await axios.post("http://localhost:3000/users", {
         email: this.email,
         password: this.password,
+        contact: this.contact,
+        role: 'user'
       });
-      if (res.status === 201) {
-        localStorage.setItem("user-info", JSON.stringify(res.data));
-        this.$router.push({name: 'AdminPage'})
-      }
+      setTimeout(() => {
+        if (res.status <= 400) {
+          console.log('gyhijoko;jykgfs');
+          localStorage.setItem("user-info", JSON.stringify(res.data));
+          this.$router.push({ name: "LoginPage" });
+        }
+        
+      }, 2000);
     },
-  }
+  },
 };
 </script>
 

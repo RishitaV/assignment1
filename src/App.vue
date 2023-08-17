@@ -7,8 +7,10 @@
 </template>
 
 <script>
+// import { mapGetters } from 'vuex';
 export default {
   name: 'App',
+
 
   components: {
   },
@@ -16,5 +18,9 @@ export default {
   data: () => ({
     
   }),
+  mounted() {
+    console.log('====> ', this.$store.state.user);
+    // setUser();
+  }
 };
 </script>

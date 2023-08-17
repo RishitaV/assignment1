@@ -6,7 +6,7 @@
         <thead>
           <tr>
             <th class="text-left">Book Name</th>
-            <th class="text-left">User Name</th>
+            <th class="text-left">Issuer</th>
             <th class="text-left">Due Date</th>
             <th class="text-left">Issue Date</th>
           </tr>

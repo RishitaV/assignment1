@@ -3,19 +3,19 @@
     <router-link to="/home">
       <div>
         <HomeAccount />
-        <span to="/" icon="fas fa-home">Main Menu</span>
+        <span icon="fas fa-home">Main Menu</span>
       </div>
     </router-link>
     <router-link to="/add">
       <div>
         <BookPlus />
-        <span to="/dashboard" icon="fas fa-columns">Add Books</span>
+        <span icon="fas fa-columns">Add Books</span>
       </div>
     </router-link>
     <router-link to="/issueBook">
       <div>
         <BookCheck />
-        <span to="/dashboard" icon="fas fa-columns">Issue Books</span>
+        <span icon="fas fa-columns">Issue Books</span>
       </div>
     </router-link>
     <router-link to="/custDetails">

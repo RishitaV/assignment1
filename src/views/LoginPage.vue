@@ -20,10 +20,9 @@
         </div>
         <div class="row">
           <div class="col">
-            <a href="#!">Forgot password?</a>
+            <router-link to="/register">Register</router-link>
           </div>
         </div>
-
         <v-btn @click="login" class="ma-2" color="primary"> Sign In </v-btn>
       </form>
     </div>
@@ -32,6 +31,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   name: "LoginPage",
   props: {},
@@ -63,9 +63,23 @@ export default {
         localStorage.setItem("user-info", JSON.stringify(res.data[0]));
         this.$router.push({ name: "HomePage" });
       }
+
+      try {
+       await this.$store.dispatch('setUser', {
+          username: this.email,
+          password: this.password,
+        });
+        // Redirect or show success message
+      } catch (error) {
+        console.error(error);
+        // Show error message
+      }
     },
+    // methods: mapActions([getUser]),
   },
+  computed: mapGetters(["getUser"]),
   mounted() {
+    console.log('login===>');
     let user = localStorage.getItem("user-info");
     if (user) {
       this.$router.push({ name: "HomePage" });

@@ -21,8 +21,7 @@ export default {
     };
   },
   methods: {
-    async issueBook(e) {
-        console.log("e==>", e);
+    async issueBook() {
     //   let dt = new Date();
     //   let today = new Date();
     //   dt.setDate(dt.getDate() + 10);

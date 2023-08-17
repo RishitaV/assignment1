@@ -5,7 +5,7 @@
         v-show="new Date(issue.dueDate).getDate() - new Date().getDate()  <= 3"
         class="dailog"
         type="error"
-        >Book to be returned on {{ issue.dueDate }}
+        >{{issue.bName}} to be returned on {{ issue.dueDate }}
       </v-alert>
     </div>
   </div>
@@ -27,13 +27,8 @@ export default {
       let res = await axios.get("http://localhost:3000/issues");
       this.user = JSON.parse(user);
       this.issues = res.data.filter((issue) => {
-        console.log(
-          "sjw==> ", new Date(issue.dueDate).getDate() - new Date().getDate()  <= 3
-
-        );
         return issue.uName === this.user.email;
       });
-      console.log(this.issues);
     },
   },
   async mounted() {
