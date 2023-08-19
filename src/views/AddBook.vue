@@ -1,31 +1,31 @@
 <template>
   <div>
     <h3>Add New Book</h3>
-         ffwef {{ $store.state.user }}
-
     <div class="container py-5 main-container">
       <form>
         <div>
-          <v-text-field v-model="book.name" label="Book Name"></v-text-field>
+          <v-text-field
+            :rules="[rules.required]"
+            v-model="book.name"
+            label="Book Name"
+          ></v-text-field>
         </div>
 
         <div>
           <v-text-field
-            v-model="password"
+            v-model="book.description"
             label="Book Description"
           ></v-text-field>
         </div>
         <div>
-          <v-file-input
-            v-model="book.image"
-            accept="image/*"
-            label="File input"
-          ></v-file-input>
+          <v-text-field v-model="book.image" label="File input"></v-text-field>
         </div>
         <div>
           <v-text-field
             v-model="book.noOfBooks"
+            type="number"
             label="Available"
+            :rules="[rules.required]"
           ></v-text-field>
         </div>
         <v-btn @click="addBook" class="ma-2" color="primary">
@@ -44,8 +44,12 @@ export default {
     return {
       book: {
         name: "",
+        description: "",
         image: "",
         noOfBooks: "",
+      },
+      rules: {
+        required: (value) => !!value || "Required.",
       },
     };
   },
@@ -53,14 +57,14 @@ export default {
     async addBook() {
       await axios.post("http://localhost:3000/books", {
         title: this.book.name,
-        image_url: JSON.stringify(this.book.image),
+        image_url: this.book.image,
         available: this.book.noOfBooks,
       });
+      this.$router.push({ name: "AdminPage" });
     },
   },
   async mounted() {
-    let user = localStorage.getItem("user-info");
-    if (!user) {
+    if (!this.$store.state.isAuthenticated) {
       this.$router.push({ name: "LoginPage" });
     }
   },

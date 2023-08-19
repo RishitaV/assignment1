@@ -1,7 +1,6 @@
 <template>
   <div class="nav">
     <slot></slot>
-    <!-- <div class="options">Logo</div> -->
     <div class="options" @click="logout()">Logout</div>
   </div>
 </template>
@@ -10,11 +9,16 @@
 export default {
   name: "HeaderComp",
   methods: {
-    logout() {
-        localStorage.clear();
-        this.$router.push({name: 'LoginPage'});
-    }
-  }
+    async logout() {
+      localStorage.clear();
+      this.$router.push({ name: "LoginPage" });
+      try {
+        await this.$store.dispatch("logout");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
 };
 </script>
 
@@ -26,6 +30,6 @@ export default {
   color: white;
 }
 .options {
-    cursor: pointer;
+  cursor: pointer;
 }
 </style>

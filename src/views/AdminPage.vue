@@ -3,20 +3,32 @@
     <HeaderComp>
       <div class="options" :style="style">Logo</div>
     </HeaderComp>
+
     <div class="container">
       <SidebarComp />
-      ffwef {{ loginUser }}
       <v-simple-table class="table" height="90vh">
         <template v-slot:default>
           <thead>
             <tr>
               <th class="text-left">Name</th>
               <th class="text-left">Available</th>
-              <th class="text-left">Actions</th>
+              <th v-show="user.role === 'admin'" class="text-left">Actions</th>
+              <th class="text-left">
+                <router-link to="/add">
+                  <v-btn v-show="user.role === 'admin'" color="primary">
+                    Add New Book
+                  </v-btn>
+                </router-link>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="book in books" :key="book.id">
+            <tr
+              :title="book.available ? '' : 'Out of stock'"
+              :class="book.available ? '' : 'disabled'"
+              v-for="book in books"
+              :key="book.id"
+            >
               <td>
                 <v-img
                   :src="book.image_url"
@@ -28,15 +40,8 @@
                 />
                 {{ book.title }}
               </td>
-              <!-- <td>{{ book.title }}</td> -->
               <td>{{ book.available }}</td>
               <td>
-                <v-btn
-                  v-show="user.role === 'user'"
-                  @click="issueBook(book.id, book.title)"
-                  color="primary"
-                  >Issue Book</v-btn
-                >
 
                 <v-btn
                   v-show="user.role === 'admin'"
@@ -49,12 +54,8 @@
           </tbody>
         </template>
       </v-simple-table>
-      <router-link to="/add"
-        ><v-btn v-show="user.role === 'admin'" color="primary"
-          >Add Book</v-btn
-        ></router-link
-      >
     </div>
+    <!-- <AGgrid v-if="books.length" :books="bookProp" /> -->
     <alertDailog />
   </div>
 </template>
@@ -63,6 +64,8 @@
 import HeaderComp from "../components/HeaderComp.vue";
 import SidebarComp from "../components/SidebarComp";
 import alertDailog from "../components/Dailog";
+// import AGgrid from "./AGgrid";
+
 import axios from "axios";
 export default {
   name: "AdminPage",
@@ -70,18 +73,20 @@ export default {
     HeaderComp,
     SidebarComp,
     alertDailog,
+    // AGgrid,
   },
   data() {
     return {
       books: [],
       user: {},
+      bookProp: [],
       style: "text-indent: 4em;",
     };
   },
   computed: {
     loginUser() {
-      return this.$store.state.user
-    }
+      return this.$store.state.user;
+    },
   },
   methods: {
     async deleteBook(id) {
@@ -91,13 +96,16 @@ export default {
       }
     },
     async loadData() {
-      let user = localStorage.getItem("user-info");
-      if (!user) {
+      let user = localStorage.getItem("user-info") || {};
+      if (!this.$store.state.isAuthenticated) {
         this.$router.push({ name: "LoginPage" });
       }
       let res = await axios.get("http://localhost:3000/books");
       this.user = JSON.parse(user);
       this.books = res.data;
+      this.bookProp = this.books.map((book) => {
+        return { title: book.title, available: book.available };
+      });
     },
     async issueBook(id, bName) {
       let dt = new Date();
@@ -114,7 +122,7 @@ export default {
     },
   },
   async mounted() {
-    this.loadData();
+    await this.loadData();
   },
 };
 </script>
@@ -131,12 +139,18 @@ img {
 .table {
   width: 80vw;
 }
+.disabled {
+  background-color: darkgrey;
+}
+.disabled:hover {
+  background-color: pink;
+}
 .container {
   display: flex;
   justify-content: flex-start;
   margin: 0;
   padding: 0;
   align-items: flex-start;
-  /* width: 50%; */
+  position: absolute;
 }
 </style>

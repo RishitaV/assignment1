@@ -84,7 +84,6 @@ export default {
       });
       setTimeout(() => {
         if (res.status <= 400) {
-          console.log('gyhijoko;jykgfs');
           localStorage.setItem("user-info", JSON.stringify(res.data));
           this.$router.push({ name: "LoginPage" });
         }

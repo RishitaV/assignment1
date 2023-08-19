@@ -16,7 +16,6 @@
             <td>
               {{ issue.bName }}
             </td>
-            <!-- <td>{{ book.title }}</td> -->
             <td>{{ issue.uName }}</td>
             <td>{{ issue.issueDate }}</td>
 
@@ -34,15 +33,19 @@ export default {
   data() {
     return {
       bookIssues: [],
+      user: {},
     };
   },
   async mounted() {
-    this.user = localStorage.getItem("user-info");
-    if (!this.user) {
+    this.user = JSON.parse(localStorage.getItem("user-info")) || {};
+    if (!this.$store.state.isAuthenticated) {
       this.$router.push({ name: "LoginPage" });
     }
-    let res = await axios.get("http://localhost:3000/issues");
-    this.bookIssues = res.data;
+    const res = await axios.get("http://localhost:3000/issues");
+    this.bookIssues =
+      this.user.role === "user"
+        ? res.data.filter((issueer) => issueer.uName === this.user.email)
+        : res.data;
   },
 };
 </script>

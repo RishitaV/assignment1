@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-for="issue in issues" :key="issue.id">
+  <div class="main_container" >
+    <div class="container" v-for="issue in issues" :key="issue.id">
       <v-alert
         v-show="new Date(issue.dueDate).getDate() - new Date().getDate()  <= 3"
         class="dailog"
@@ -40,5 +40,15 @@ export default {
 <style scoped>
 .dailog {
   width: 50%;
+}
+.container {
+  position: relative;
+  top: 0;
+  right: 0;
+}
+.main_container {
+  position: absolute;
+  z-index: 1;
+  right: 0;
 }
 </style>

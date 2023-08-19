@@ -3,25 +3,25 @@
     <router-link to="/home">
       <div>
         <HomeAccount />
-        <span icon="fas fa-home">Main Menu</span>
+        <span>Main Menu</span>
       </div>
     </router-link>
     <router-link to="/add">
       <div>
         <BookPlus />
-        <span icon="fas fa-columns">Add Books</span>
+        <span>Add Books</span>
       </div>
     </router-link>
     <router-link to="/issueBook">
       <div>
         <BookCheck />
-        <span icon="fas fa-columns">Issue Books</span>
+        <span>Issue Books</span>
       </div>
     </router-link>
     <router-link to="/custDetails">
       <div>
         <AccountDetails />
-        <span icon="fas fa-users">Customer Details</span>
+        <span>{{ sidebarTitle }}</span>
       </div>
     </router-link>
   </div>
@@ -36,15 +36,25 @@ import AccountDetails from "vue-material-design-icons/AccountDetails.vue";
 export default {
   name: "SidebarComp",
   props: {},
-  // components: {
-  //   SvgIcon,
-  // },
 
-  // data() {
-  //   return {
-  //     path: mdiAccount,
-  //   };
-  // },
+  data() {
+    return {
+      role: "",
+      userRole: "",
+    };
+  },
+  beforeMount() {
+    let user = JSON.parse(localStorage.getItem("user-info"));
+    this.userRole = user.role;
+    if (!user) {
+      this.$router.push({ name: "LoginPage" });
+    }
+  },
+  computed: {
+    sidebarTitle() {
+      return this.userRole === "user" ? "My Books" : "Customer Details";
+    },
+  },
   components: {
     HomeAccount,
     BookPlus,

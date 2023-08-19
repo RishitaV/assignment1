@@ -2,25 +2,30 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 Vue.use(Vuex)
 const state = {
-    user: {}
+    isAuthenticated: false,
+    user: null
 }
 const mutations = {
-    setUser: (state, user) => {
+    SET_AUTHENTICATED(state, isAuthenticated) {
+        state.isAuthenticated = isAuthenticated;
+    },
+    SET_USER(state, user) {
         state.user = user;
-    }
+    },
 }
 const actions = {
-    setUser: async ({ commit }, payload) => {
-        try {
-            commit('setUser', payload)
-            // console.log('user==> ', state.user);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    login({ commit }, user) {
+        commit("SET_AUTHENTICATED", true);
+        commit("SET_USER", user);
+    },
+    logout({ commit }) {
+        commit("SET_AUTHENTICATED", false);
+        commit("SET_USER", null);
+    },
 }
 const getters = {
-    getUser: state => state.user
+    isAuthenticated: state => state.isAuthenticated,
+    user: state => state.user,
 }
 export default new Vuex.Store({
     state,

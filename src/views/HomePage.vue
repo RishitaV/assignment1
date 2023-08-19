@@ -1,7 +1,5 @@
 <template>
   <div>
-        {{$store.state.user.email}}
-
     <router-link to="/"><v-btn class="ma-2" color="primary"> Home </v-btn></router-link>
     <router-link to="/add"><v-btn class="ma-2" color="primary"> Add Books </v-btn></router-link>
     <router-link to="/issueBook"><v-btn class="ma-2" color="primary"> Issue Books </v-btn></router-link>
@@ -19,9 +17,9 @@ export default {
   },
   mounted(){
       this.user = localStorage.getItem("user-info");
-      if (!this.user) {
-        this.$router.push({ name: "LoginPage" });
-      }
+      if (!this.$store.state.isAuthenticated) {
+      this.$router.push({ name: "LoginPage" });
+    }
   }
 }
 </script>

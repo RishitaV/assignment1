@@ -18,6 +18,14 @@
             label="Password"
           ></v-text-field>
         </div>
+        <v-select
+          label="Select"
+          v-model="role"
+          :items="[
+            'Admin',
+            'User',
+          ]"
+        ></v-select>
         <div class="row">
           <div class="col">
             <router-link to="/register">Register</router-link>
@@ -39,6 +47,7 @@ export default {
     return {
       email: "",
       password: "",
+      role: "",
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) =>
@@ -65,23 +74,19 @@ export default {
       }
 
       try {
-       await this.$store.dispatch('setUser', {
+        await this.$store.dispatch("login", {
           username: this.email,
           password: this.password,
+          role: this.role,
         });
-        // Redirect or show success message
       } catch (error) {
         console.error(error);
-        // Show error message
       }
     },
-    // methods: mapActions([getUser]),
   },
   computed: mapGetters(["getUser"]),
   mounted() {
-    console.log('login===>');
-    let user = localStorage.getItem("user-info");
-    if (user) {
+    if (this.$store.state.isAuthenticated) {
       this.$router.push({ name: "HomePage" });
     }
   },
