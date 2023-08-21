@@ -36,6 +36,7 @@ export default {
         bid: selectedBook[0].id,
         uid: this.user.id,
         uName: this.user.email,
+        uContact: this.user.contact,
         bName: selectedBook[0].title,
         dueDate: dt.toLocaleDateString(),
         issueDate: today.toLocaleDateString(),

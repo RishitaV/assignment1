@@ -9,6 +9,7 @@ import HomePage from './views/HomePage';
 import IssueBook from './views/IssueBook';
 import AddBook from './views/AddBook';
 import CustomerDetails from './views/CustomerDetails';
+import AGgrid from './views/AGgrid';
 import store from './store/store'
 
 Vue.use(VueRouter);
@@ -42,6 +43,11 @@ const routes = [
     path: '/add', name: 'AddBook', meta: {
       requiresAuth: true
     }, component: AddBook
+  },
+  {
+    path: '/aggrid', name: 'AGgrid', meta: {
+      requiresAuth: true
+    }, component: AGgrid
   },
   { path: '/custDetails', name: 'CustomerDetails', component: CustomerDetails },
   //metadata (read abt it)

@@ -1,11 +1,8 @@
 <template>
-  <div class="main_container" >
+  <div class="main_container">
     <div class="container" v-for="issue in issues" :key="issue.id">
-      <v-alert
-        v-show="new Date(issue.dueDate).getDate() - new Date().getDate()  <= 3"
-        class="dailog"
-        type="error"
-        >{{issue.bName}} to be returned on {{ issue.dueDate }}
+      <v-alert v-show="showAlert(issue)" class="dailog" type="error"
+        >{{ issue.bName }} to be returned on {{ issue.dueDate }}
       </v-alert>
     </div>
   </div>
@@ -29,6 +26,14 @@ export default {
       this.issues = res.data.filter((issue) => {
         return issue.uName === this.user.email;
       });
+    },
+    showAlert(issue) {
+      if(new Date(issue.dueDate).getDate() - new Date().getDate()  <= 3) {
+        return true;
+      }
+      else {
+        return false;
+      }
     },
   },
   async mounted() {

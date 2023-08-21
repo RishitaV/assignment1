@@ -55,7 +55,6 @@
         </template>
       </v-simple-table>
     </div>
-    <!-- <AGgrid v-if="books.length" :books="bookProp" /> -->
     <alertDailog />
   </div>
 </template>
@@ -64,7 +63,6 @@
 import HeaderComp from "../components/HeaderComp.vue";
 import SidebarComp from "../components/SidebarComp";
 import alertDailog from "../components/Dailog";
-// import AGgrid from "./AGgrid";
 
 import axios from "axios";
 export default {
@@ -73,7 +71,6 @@ export default {
     HeaderComp,
     SidebarComp,
     alertDailog,
-    // AGgrid,
   },
   data() {
     return {

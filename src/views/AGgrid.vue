@@ -1,7 +1,7 @@
 <template>
   <div>
     <ag-grid-vue
-      style="width: 500px; height: 200px"
+      style="width: 90vw; height: 200px"
       class="ag-theme-alpine"
       :columnDefs="columnDefs"
       :rowData="rowData"
@@ -30,8 +30,11 @@ export default {
     },
   async mounted() {
       this.columnDefs = [
-        { headerName: "Name", field: "title" },
-        { headerName: "Available", field: "available" },
+        { headerName: "Name", field: "bName" },
+        { headerName: "Issuer", field: "uName" },
+        { headerName: "Due Date", field: "issueDate" },
+        { headerName: "Issue Date", field: "dueDate" },
+        { headerName: "Contact", field: "uContact" },
       ];
       this.rowData = this.books;        
   },
