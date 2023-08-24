@@ -1,125 +1,100 @@
 <template>
   <div>
-    <HeaderComp>
-      <div class="options" :style="style">Logo</div>
-    </HeaderComp>
-
     <div class="container">
-      <SidebarComp />
-      <v-simple-table class="table" height="90vh">
+      <v-simple-table class="table">
         <template v-slot:default>
           <thead>
             <tr>
               <th class="text-left">Name</th>
               <th class="text-left">Available</th>
-              <th v-show="user.role === 'admin'" class="text-left">Actions</th>
+              <th v-show="isAdmin" class="text-left">Actions</th>
               <th class="text-left">
                 <router-link to="/add">
-                  <v-btn v-show="user.role === 'admin'" color="primary">
-                    Add New Book
-                  </v-btn>
+                  <v-btn v-show="isAdmin" color="primary"> Add New Book </v-btn>
                 </router-link>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr
-              :title="book.available ? '' : 'Out of stock'"
-              :class="book.available ? '' : 'disabled'"
-              v-for="book in books"
+              :title="title(book.available)"
+              :class="rowStyle(book.available)"
+              v-for="book in getBooks"
               :key="book.id"
+              @click="redirectToIssuePage(book.available)"
             >
               <td>
                 <v-img
                   :src="book.image_url"
-                  class="align-end"
-                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                  height="100px"
-                  width="80px"
+                  class="align-end book__image"
                   cover
                 />
                 {{ book.title }}
               </td>
               <td>{{ book.available }}</td>
               <td>
-
                 <v-btn
-                  v-show="user.role === 'admin'"
+                  v-show="isAdmin"
                   @click="deleteBook(book.id)"
                   color="primary"
-                  >Delete Book</v-btn
-                >
+                  >Delete Book
+                </v-btn>
               </td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
     </div>
-    <alertDailog />
+    <DueBooksAlertDailog />
   </div>
 </template>
 
 <script>
-import HeaderComp from "../components/HeaderComp.vue";
-import SidebarComp from "../components/SidebarComp";
-import alertDailog from "../components/Dailog";
+import DueBooksAlertDailog from "../components/DueBooksAlertDailog";
 
-import axios from "axios";
 export default {
   name: "AdminPage",
   components: {
-    HeaderComp,
-    SidebarComp,
-    alertDailog,
-  },
-  data() {
-    return {
-      books: [],
-      user: {},
-      bookProp: [],
-      style: "text-indent: 4em;",
-    };
+    DueBooksAlertDailog,
   },
   computed: {
     loginUser() {
       return this.$store.state.user;
     },
+    getBooks() {
+      return this.$store.state.books;
+    },
+    isAdmin() {
+      return this.loginUser.role === "admin";
+    },
   },
   methods: {
     async deleteBook(id) {
-      const res = await axios.delete("http://localhost:3000/books/" + id);
-      if (res.status === 200) {
-        this.loadData();
+      await this.$store.dispatch("deleteBook", id);
+      await this.$store.dispatch("setBooks");
+    },
+    redirectToIssuePage(bookIsAvailable) {
+      if (this.loginUser.role !== "admin" && bookIsAvailable) {
+        this.$router.push("/issueBook");
       }
     },
-    async loadData() {
-      let user = localStorage.getItem("user-info") || {};
+    async notLoggedIn() {
       if (!this.$store.state.isAuthenticated) {
         this.$router.push({ name: "LoginPage" });
       }
-      let res = await axios.get("http://localhost:3000/books");
-      this.user = JSON.parse(user);
-      this.books = res.data;
-      this.bookProp = this.books.map((book) => {
-        return { title: book.title, available: book.available };
-      });
     },
-    async issueBook(id, bName) {
-      let dt = new Date();
-      let today = new Date();
-      dt.setDate(dt.getDate() + 10);
-      await axios.post("http://localhost:3000/issues", {
-        bid: id,
-        uid: this.user.id,
-        uName: this.user.email,
-        bName,
-        dueDate: dt.toLocaleDateString(),
-        issueDate: today.toLocaleDateString(),
-      });
+    title(bookIsAvailable) {
+      return bookIsAvailable ? "" : "Out of stock";
+    },
+    rowStyle(bookIsAvailable) {
+      return bookIsAvailable ? "" : "disabled";
     },
   },
   async mounted() {
-    await this.loadData();
+    await this.notLoggedIn();
+  },
+  created() {
+    this.$store.dispatch("setBooks");
   },
 };
 </script>
@@ -129,12 +104,9 @@ img {
   width: 300px;
   height: 300px;
 }
-.container {
-  display: flex;
-  justify-content: space-between;
-}
 .table {
   width: 80vw;
+  height: 90vh;
 }
 .disabled {
   background-color: darkgrey;
@@ -149,5 +121,14 @@ img {
   padding: 0;
   align-items: flex-start;
   position: absolute;
+}
+.book__image {
+  height: 100px;
+  width: 80px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.5)
+  );
 }
 </style>

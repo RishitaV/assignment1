@@ -1,8 +1,7 @@
 <template>
   <div>
     <ag-grid-vue
-      style="width: 90vw; height: 200px"
-      class="ag-theme-alpine"
+      class="ag-theme-alpine grid"
       :columnDefs="columnDefs"
       :rowData="rowData"
     />
@@ -19,24 +18,29 @@ export default {
   components: {
     AgGridVue,
   },
-  props: ['books'],
+  props: ["books"],
   data() {
-   return {
-     columnDefs: [],
-     rowData: [],
-   };
- },
-  created() {
-    },
-  async mounted() {
-      this.columnDefs = [
-        { headerName: "Name", field: "bName" },
-        { headerName: "Issuer", field: "uName" },
-        { headerName: "Due Date", field: "issueDate" },
-        { headerName: "Issue Date", field: "dueDate" },
-        { headerName: "Contact", field: "uContact" },
-      ];
-      this.rowData = this.books;        
+    return {
+      columnDefs: [],
+      rowData: [],
+    };
+  },
+  mounted() {
+    this.columnDefs = [
+      { headerName: "Name", field: "bookName" },
+      { headerName: "Issuer", field: "userName" },
+      { headerName: "Due Date", field: "bookIssueDate" },
+      { headerName: "Issue Date", field: "bookDueDate" },
+      { headerName: "Contact", field: "userContact" },
+    ];
+    this.rowData = this.books;
   },
 };
 </script>
+
+<style scoped>
+.grid {
+  width: 90vw;
+  height: 200px;
+}
+</style>

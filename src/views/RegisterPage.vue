@@ -2,7 +2,7 @@
   <div>
     <h3>Register</h3>
     <div class="container py-5 main-container">
-      <form>
+      <v-form>
         <div>
           <v-text-field
             v-model="email"
@@ -33,17 +33,25 @@
           ></v-text-field>
         </div>
 
-        <button @click.prevent="signUp(e)" type="submit" class="btn btn-primary btn-block">
+        <v-select
+          label="Select"
+          v-model="role"
+          :items="['Admin', 'User']"
+        ></v-select>
+
+        <button
+          @click.prevent="signUp(e)"
+          type="submit"
+          class="btn btn-primary btn-block"
+        >
           Sign Up
         </button>
-      </form>
+      </v-form>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "RegisterPage",
   props: {},
@@ -53,6 +61,7 @@ export default {
       contact: "",
       password: "",
       confirmPassword: "",
+      role: "",
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) =>
@@ -76,19 +85,13 @@ export default {
   },
   methods: {
     async signUp() {
-      let res = await axios.post("http://localhost:3000/users", {
+      this.$store.dispatch("registerUser", {
         email: this.email,
         password: this.password,
         contact: this.contact,
-        role: 'user'
+        role: this.role,
       });
-      setTimeout(() => {
-        if (res.status <= 400) {
-          localStorage.setItem("user-info", JSON.stringify(res.data));
-          this.$router.push({ name: "LoginPage" });
-        }
-        
-      }, 2000);
+      this.$router.push({ name: "LoginPage" });
     },
   },
 };

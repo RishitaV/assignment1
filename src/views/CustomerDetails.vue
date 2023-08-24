@@ -3,51 +3,54 @@
     <h3>Customer Details</h3>
     <v-btn class="ma-2" @click="toggleActive" color="primary"> AG-Grid </v-btn>
     <div v-show="active">
-      <v-simple-table class="table" height="90vh">
+      <v-simple-table class="table">
         <template v-slot:default>
           <thead>
             <tr>
               <th class="text-left">Book Name</th>
               <th class="text-left">Issuer</th>
-              <th class="text-left">Due Date</th>
               <th class="text-left">Issue Date</th>
+              <th class="text-left">Due Date</th>
               <th class="text-left">Contact</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="issue in bookIssues" :key="issue.id">
               <td>
-                {{ issue.bName }}
+                {{ issue.bookName }}
               </td>
-              <td>{{ issue.uName }}</td>
-              <td>{{ issue.issueDate }}</td>
+              <td>{{ issue.userName }}</td>
+              <td>{{ issue.bookIssueDate }}</td>
 
-              <td>{{ issue.dueDate }}</td>
-              <td>{{ issue.uContact }}</td>
+              <td>{{ issue.bookDueDate }}</td>
+              <td>{{ issue.userContact }}</td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
     </div>
     <div v-show="!active">
-      <AGgrid v-if="bookIssues.length" :books = "bookIssues" />
+      <AGgrid v-if="bookIssues.length" :books="bookIssues" />
     </div>
   </div>
 </template>
 <script>
-import axios from "axios";
-import AGgrid from './AGgrid';
+import AGgrid from "./AGgrid";
 export default {
   name: "CustomerDetails",
   data() {
     return {
       bookIssues: [],
-      user: {},
       active: true,
     };
   },
   components: {
     AGgrid,
+  },
+  computed: {
+    isAuthenticated() {
+      return this.$store.state.isAuthenticated;
+    },
   },
   methods: {
     toggleActive() {
@@ -55,15 +58,22 @@ export default {
     },
   },
   async mounted() {
-    this.user = JSON.parse(localStorage.getItem("user-info")) || {};
-    if (!this.$store.state.isAuthenticated) {
+    let user = this.$store.getters.user || {};
+    if (!this.isAuthenticated) {
       this.$router.push({ name: "LoginPage" });
     }
-    const res = await axios.get("http://localhost:3000/issues");
+    const res = this.$store.getters.issues;
+    console.log(res);
     this.bookIssues =
-      this.user.role === "user"
-        ? res.data.filter((issueer) => issueer.uName === this.user.email)
-        : res.data;
+      user.role === "user"
+        ? res.filter((issueer) => issueer.userName === user.email)
+        : res;
   },
 };
 </script>
+
+<style scoped>
+table {
+  height: 90vh;
+}
+</style>

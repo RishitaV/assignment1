@@ -7,41 +7,46 @@
     ></v-autocomplete>
 
     <v-btn @click="issueBook()" class="ma-2" color="primary"> Issue </v-btn>
-    rgte{{ bookToBeIssued }}
   </div>
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "IssueBook",
   data() {
     return {
       bookToBeIssued: "",
-      issuedTo: "",
       user: {},
       books: [],
       bookList: [],
     };
   },
+  computed: {
+    isAuthenticated() {
+      return this.$store.state.isAuthenticated;
+    },
+    allBooks() {
+      return this.$store.state.books;
+    },
+  },
   methods: {
     async issueBook() {
-      let dt = new Date();
+      let bookDueDate = new Date();
       let today = new Date();
-      dt.setDate(dt.getDate() + 10);
-      let selectedBook = this.book.filter(
+      bookDueDate.setDate(bookDueDate.getDate() + 10);
+      let selectedBook = this.allBooks.filter(
         (book) => book.title === this.bookToBeIssued
       );
-      await axios.post("http://localhost:3000/issues", {
-        bid: selectedBook[0].id,
-        uid: this.user.id,
-        uName: this.user.email,
-        uContact: this.user.contact,
-        bName: selectedBook[0].title,
-        dueDate: dt.toLocaleDateString(),
-        issueDate: today.toLocaleDateString(),
+      await this.$store.dispatch("addToIssues", {
+        bookId: selectedBook[0].id,
+        userId: this.user.id,
+        userName: this.user.email,
+        userContact: this.user.contact,
+        bookName: selectedBook[0].title,
+        bookDueDate: bookDueDate.toLocaleDateString(),
+        bookIssueDate: today.toLocaleDateString(),
       });
-      await axios.put(`http://localhost:3000/books/${selectedBook[0].id}`, {
+      await this.$store.dispatch("updateBookAvailability", {
         ...selectedBook[0],
         available: selectedBook[0].available - 1,
       });
@@ -49,22 +54,24 @@ export default {
     },
   },
   async mounted() {
-    let user = localStorage.getItem("user-info");
-    if (!this.$store.state.isAuthenticated) {
+    if (!this.isAuthenticated) {
       this.$router.push({ name: "LoginPage" });
     } else {
-      this.user = JSON.parse(user);
+      this.user = this.$store.getters.user;
     }
-
-    let resB = await axios.get("http://localhost:3000/books");
-    this.book = resB.data;
-    this.bookList = resB.data.map((item) => {
-      if (item.available) {
-        return item.title;
-      }
-    });
-    let resU = await axios.get("http://localhost:3000/users");
-    this.users = resU.data.map((item) => item.email);
+    await this.$store.dispatch("setBooks");
+    let books = this.allBooks;
+    if (books) {
+      this.bookList = books.map((item) => {
+        if (item.available) {
+          return item.title;
+        }
+      });
+    }
+    let users = await this.$store.getters.users;
+    if (users) {
+      this.users = users.map((item) => item.email);
+    }
   },
 };
 </script>

@@ -18,14 +18,6 @@
             label="Password"
           ></v-text-field>
         </div>
-        <v-select
-          label="Select"
-          v-model="role"
-          :items="[
-            'Admin',
-            'User',
-          ]"
-        ></v-select>
         <div class="row">
           <div class="col">
             <router-link to="/register">Register</router-link>
@@ -38,7 +30,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapGetters } from "vuex";
 export default {
   name: "LoginPage",
@@ -65,20 +56,18 @@ export default {
   },
   methods: {
     async login() {
-      let res = await axios.get(
-        `http://localhost:3000/users?email=${this.email}&password=${this.password}`
-      );
-      if (res.status === 200 && res.data.length > 0) {
-        localStorage.setItem("user-info", JSON.stringify(res.data[0]));
-        this.$router.push({ name: "HomePage" });
-      }
-
       try {
-        await this.$store.dispatch("login", {
-          username: this.email,
+        await this.$store.dispatch("getUser", {
+          email: this.email,
           password: this.password,
-          role: this.role,
         });
+        this.$router.push({ name: "HomePage" });
+        if (this.email && this.password) {
+          await this.$store.dispatch("login", {
+            username: this.email,
+            password: this.password,
+          });
+        }
       } catch (error) {
         console.error(error);
       }
