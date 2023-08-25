@@ -63,7 +63,6 @@ export default {
       this.$router.push({ name: "LoginPage" });
     }
     const res = this.$store.getters.issues;
-    console.log(res);
     this.bookIssues =
       user.role === "user"
         ? res.filter((issueer) => issueer.userName === user.email)

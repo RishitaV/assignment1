@@ -1,12 +1,12 @@
 <template>
   <div>
     <router-link to="/" v-if="showAddBook()">
-      <v-btn class="ma-2" color="primary"> Home </v-btn>
+      <v-btn class="ma-2" color="primary"> All Books </v-btn>
     </router-link>
     <router-link to="/add" v-if="showAddBook()">
       <v-btn class="ma-2" color="primary"> Add Books </v-btn>
     </router-link>
-    <router-link to="/issueBook">
+    <router-link to="/issueBook" v-if="!showAddBook()">
       <v-btn class="ma-2" color="primary"> Issue Books </v-btn>
     </router-link>
     <router-link to="/custDetails">
